@@ -17,10 +17,15 @@ export const getAccessToken = () => {
   return access_token;
 };
 
-export const getData = async (accessToken: string) => {
-  const headers = {
+export const getHeaders = (accessToken: string) => {
+  console.log('headers accessToken', accessToken);
+  return {
     Authorization: `Bearer ${accessToken}`,
-  } ;
+  };
+};
+
+export const getData = async (accessToken: string) => {
+  const headers = getHeaders(accessToken);
 
   const params = {
     q: 'taylor swift',
@@ -75,4 +80,39 @@ export const getData = async (accessToken: string) => {
   } catch (error) {
     
   }
+};
+
+const getUser = async (accessToken: string) => {
+  const headers = getHeaders(accessToken);
+
+  const { data } = await axios.get(`${config.API_URL}/me`, { headers });
+  return data;
+};
+
+export const createPlaylist = async (accessToken: string) => {
+  const user = await getUser(accessToken);
+  const headers = getHeaders(accessToken);
+  const body = {
+    name: 'The Eras Tour',
+  };
+
+  const { data } = await axios.post(`${config.API_URL}/users/${user.id}/playlists`, body, { headers });
+
+  return data;
+};
+
+const getURIs = (tracks: string[]) => {
+  return tracks.map(track => `spotify:track:${track}`);
+};
+
+export const addTracks = async (accessToken: string, playlistId: string, tracks: string[]) => {
+  const headers = getHeaders(accessToken);
+
+  const body = {
+    uris: getURIs(tracks),
+  };
+
+  const { data } = await axios.post(`${config.API_URL}/playlists/${playlistId}/tracks`, body, { headers });
+
+  return data;
 };
