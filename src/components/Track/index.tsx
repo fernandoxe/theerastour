@@ -6,14 +6,14 @@ export interface TrackProps {
 
 export const Track = ({ checked, name, onChange }: TrackProps) => {
   return (
-    <label className="p-2 font-bold border border-slate-400 rounded hover:bg-slate-400 peer-checked:bg-slate-400">
+    <label>
       <input
         type="checkbox"
-        className="peer"
+        className="peer sr-only"
         checked={checked}
         onChange={onChange}
       />
-      <span className="text-sm ml-2">{name}</span>
+      <div className="px-4 py-2 text-sm peer-checked:bg-slate-400 border border-slate-400 rounded-lg">{name}</div>
     </label>
   );
 };
