@@ -6,22 +6,16 @@ import { Step } from '../Step';
 import { Button } from '../Button';
 import { Track } from '../../interfaces/Spotify';
 import { Setlist } from '../Setlist';
+import { getEmptyAllCheckedState, getSelectedTracks } from '../../services/tracks';
 
 const albums = artists[0].albums;
-
-const getEmptyAllCheckedState = () => albums.map(album => new Array(album.tracks.length).fill(false));
-
-const getSelectedTracks = (checkedState: boolean[][]) => {
-  const tracks = checkedState.map((album, i) => album.filter(track => track).map((track, j) => albums[i].tracks[j]));
-  return tracks.flat();
-};
 
 export const Home = () => {
   const [showLogin, setShowLogin] = useState(true);
   const [step, setStep] = useState(0);
-  const [allCheckedState, setAllCheckedState] = useState(getEmptyAllCheckedState());
+  const [allCheckedState, setAllCheckedState] = useState(getEmptyAllCheckedState(albums));
   const [accessToken, setAccessToken] = useState('');
-  const [showPlaylist, setShowPlaylist] = useState(false);
+  const [showSetlist, setShowSetlist] = useState(false);
   const [playlistURL, setPlaylistURL] = useState('');
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
 
@@ -32,7 +26,7 @@ export const Home = () => {
     url += `?response_type=token`;
     url += `&client_id=${encodeURIComponent(config.CLIENT_ID)}`;
     url += `&scope=${encodeURIComponent('user-read-private user-read-email playlist-modify-public')}`;
-    url += `&redirect_uri=${encodeURIComponent(config.REDIRECT_URL)}`;
+    url += `&redirect_uri=${encodeURIComponent(config.REDIRECT_URL || '/')}`;
     url += `&state=${encodeURIComponent(stateId)}`;
     
     window.location.href = url;
@@ -58,6 +52,7 @@ export const Home = () => {
 
   const handleNext = () => {
     setStep(step + 1);
+    window.scrollTo(0, 0);
   };
 
   const handleCreatePlaylist = async () => {
@@ -72,8 +67,10 @@ export const Home = () => {
   };
 
   const handleFinish = () => {
-    setSelectedTracks(getSelectedTracks(allCheckedState));
-    setShowPlaylist(true);
+    const newSelectedTracks = getSelectedTracks(allCheckedState, albums);
+    setSelectedTracks(newSelectedTracks);
+    setShowSetlist(true);
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -87,7 +84,7 @@ export const Home = () => {
           </Button>
         </div>
       }
-      {!showLogin && !showPlaylist &&
+      {!showLogin && !showSetlist &&
         <>
           <div className="mb-4">
             <Step
@@ -125,7 +122,7 @@ export const Home = () => {
           </div>
         </>
       }
-      {!showLogin && showPlaylist &&
+      {!showLogin && showSetlist &&
         <>
           {!playlistURL &&
             <Setlist
@@ -136,7 +133,7 @@ export const Home = () => {
           }
           {playlistURL &&
             <div>
-              <a href={playlistURL}>{playlistURL}</a>
+              <a href={playlistURL} target="_blank">View on Spotify</a>
             </div>
           }
         </>
