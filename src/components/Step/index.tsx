@@ -15,15 +15,18 @@ export const Step = ({ album, checkedState, onChange }: StepProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <h3 className="font-bold text-base">{album.name}</h3>
-      {album.tracks.map((track, i) =>
-        <Track
-          checked={checkedState[i]}
-          name={track.name}
-          onChange={() => handleChecked(i)}
-        />
-      )}
+    <>
+      <h3 className="font-bold text-base mb-4">{album.name}</h3>
+      <div className="flex flex-col gap-2">
+        {album.tracks.map((track, i) =>
+          <Track
+            key={track.id}
+            checked={checkedState[i]}
+            name={track.name}
+            onChange={() => handleChecked(i)}
+          />
+        )}
       </div>
+    </>
   )
 };
