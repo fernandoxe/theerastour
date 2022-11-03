@@ -1,4 +1,6 @@
-export const artists = [
+import { Artist } from '../interfaces/Spotify';
+
+export const artists: Artist[] = [
   {
     "name": "Taylor Swift",
     "id": "06HL4z0CvFAxyc27GXpf02",
@@ -889,7 +891,7 @@ export const artists = [
             "explicit": true
           },
           {
-            "name": "‘tis the damn season",
+            "name": "'tis the damn season",
             "id": "6sQckd3Z8NPxVVKUnavY1F",
             "explicit": false
           },
