@@ -3,6 +3,9 @@ import { config } from '../../config';
 import { addTracks, createPlaylist, getAccessToken, getStateId } from '../../services/spotify';
 import { artists } from '../../data';
 import { Step } from '../Step';
+import { Button } from '../Button';
+import { Track } from '../../interfaces/Spotify';
+import { Setlist } from '../Setlist';
 
 const albums = artists[0].albums;
 
@@ -20,6 +23,7 @@ export const Home = () => {
   const [accessToken, setAccessToken] = useState('');
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [playlistURL, setPlaylistURL] = useState('');
+  const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
 
   const handleLogin = () => {
     const stateId = getStateId();
@@ -53,15 +57,13 @@ export const Home = () => {
   };
 
   const handleNext = () => {
-    setStep(step + 1);console.log('next access token', accessToken);
+    setStep(step + 1);
   };
 
   const handleCreatePlaylist = async () => {
-    console.log('create playlist access token', accessToken);
     try {
-      const playlist = await createPlaylist(accessToken);console.log(accessToken);
-      const tracks = getSelectedTracks(allCheckedState);
-      const tracksIds = tracks.map(track => track.id);
+      const playlist = await createPlaylist(accessToken);
+      const tracksIds = selectedTracks.map(track => track.id);
       await addTracks(accessToken, playlist.id, tracksIds);
       setPlaylistURL(playlist.external_urls.spotify);
     } catch (error) {
@@ -70,22 +72,23 @@ export const Home = () => {
   };
 
   const handleFinish = () => {
-    setShowPlaylist(true);console.log('finish access token', accessToken);
+    setSelectedTracks(getSelectedTracks(allCheckedState));
+    setShowPlaylist(true);
   };
 
   return (
-    <>
-      <div className="flex justify-center gap-4">
-        {showLogin &&
-          <button
-            className="bg-slate-300 p-2 rounded"
+    <div className="max-w-2xl mx-auto">
+      {showLogin &&
+        <div className="fixed top-0 right-0 bottom-0 left-0 flex items-center justify-center gap-4">
+          <Button
             onClick={handleLogin}
           >
-            Login with Spotify
-          </button>}
-      </div>
+            Start
+          </Button>
+        </div>
+      }
       {!showLogin && !showPlaylist &&
-        <div>
+        <>
           <div className="mb-4">
             <Step
               album={albums[step]}
@@ -93,45 +96,43 @@ export const Home = () => {
               onChange={(checkedState) => handleStepChange(checkedState, step)}
             />
           </div>
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-between gap-4">
             {step > 0 &&
-              <button
-                className="bg-slate-300 p-2 rounded"
+              <Button
+                variant="secondary"
                 onClick={handlePrev}
               >
-                Prev
-              </button>
+                Previous
+              </Button>
             }
             {step !== albums.length - 1 &&
-              <button
-                className="bg-slate-300 p-2 rounded"
-                onClick={handleNext}
-              >
-                Next
-              </button>
+              <div className="only:ml-auto">
+                <Button
+                  onClick={handleNext}
+                >
+                  Next
+                </Button>
+
+              </div>
             }
             {step === albums.length - 1 &&
-              <button
-                className="bg-slate-300 p-2 rounded"
+              <Button
                 onClick={handleFinish}
               >
                 Finish
-              </button>
+              </Button>
             }
           </div>
-        </div>
+        </>
       }
       {!showLogin && showPlaylist &&
         <>
           {!playlistURL &&
-            <div className="flex justify-center gap-4">
-              <button
-                className="bg-slate-300 p-2 rounded"
-                onClick={handleCreatePlaylist}
-              >
-                Create Playlist
-              </button>
-            </div>
+            <Setlist
+              selectedTracks={selectedTracks}
+              onReorder={setSelectedTracks}
+              onCreatePlaylist={handleCreatePlaylist}
+            />
           }
           {playlistURL &&
             <div>
@@ -140,6 +141,6 @@ export const Home = () => {
           }
         </>
       }
-    </>
+    </div>
   );
 };
