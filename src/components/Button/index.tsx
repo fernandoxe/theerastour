@@ -14,6 +14,7 @@ export const Button: FC<ButtonProps> = ({ variant, children, loading, onClick })
     <button
       className={`${buttonVariant} border-2 border-slate-300 px-8 py-2 rounded relative`}
       onClick={onClick}
+      disabled={loading}
     >
       {!loading && children}
       {loading &&
