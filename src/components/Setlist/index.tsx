@@ -13,16 +13,15 @@ import {
 } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { Track } from '../../interfaces/Spotify';
-import { Button } from '../Button';
 import { Item } from './Item';
 
 export interface SetlistProps {
   selectedTracks: Track[];
+  disableDrag?: boolean;
   onReorder: (tracks: Track[]) => void;
-  onCreatePlaylist: () => void;
 }
 
-export const Setlist = ({ selectedTracks, onReorder, onCreatePlaylist }: SetlistProps) => {
+export const Setlist = ({ selectedTracks, disableDrag, onReorder }: SetlistProps) => {
   const sensors = useSensors(
     useSensor(TouchSensor),
     useSensor(MouseSensor),
@@ -42,7 +41,7 @@ export const Setlist = ({ selectedTracks, onReorder, onCreatePlaylist }: Setlist
 
   return (
     <>
-      <h3 className="font-bold text-base mb-4">The Eras Tour setlist</h3>
+      <h3 className="font-bold text-lg text-center mb-4">The Eras Tour setlist</h3>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -51,17 +50,10 @@ export const Setlist = ({ selectedTracks, onReorder, onCreatePlaylist }: Setlist
       >
         <SortableContext items={selectedTracks} strategy={verticalListSortingStrategy}>
           {selectedTracks.map((track, i) =>
-            <Item key={track.id} track={track} position={i + 1} />
+            <Item key={track.id} track={track} position={i + 1} disableDrag={disableDrag} />
           )}
         </SortableContext>
       </DndContext>
-      <div className="flex justify-center gap-4">
-        <Button
-          onClick={onCreatePlaylist}
-        >
-          Create playlist
-        </Button>
-      </div>
     </>
   );
 };
