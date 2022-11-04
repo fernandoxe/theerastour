@@ -1,6 +1,7 @@
 export interface Track {
   name: string;
   id: string;
+  duration: number;
   explicit: boolean;
 }
 
