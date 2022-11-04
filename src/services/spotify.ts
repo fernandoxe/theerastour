@@ -98,7 +98,9 @@ export const createPlaylist = async (accessToken: string) => {
     name: 'The Eras Tour',
   };
 
-  // throw new Error('playlist not created');
+  // await new Promise(resolve => setTimeout(resolve, 1000));
+  // throw new Error('Playlist not created');
+
   const { data } = await axios.post(`${config.API_URL}/users/${user.id}/playlists`, body, { headers });
   return data;
 };
@@ -114,7 +116,9 @@ export const addTracks = async (accessToken: string, playlistId: string, tracks:
     uris: getURIs(tracks),
   };
 
-  const { data } = await axios.post(`${config.API_URL}/playlists/${playlistId}/tracks`, body, { headers });
+  // await new Promise(resolve => setTimeout(resolve, 1000));
+  // throw new Error('Tracks not added');
 
+  const { data } = await axios.post(`${config.API_URL}/playlists/${playlistId}/tracks`, body, { headers });
   return data;
 };
