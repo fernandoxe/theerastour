@@ -18,7 +18,6 @@ export const getAccessToken = () => {
 };
 
 export const getHeaders = (accessToken: string) => {
-  console.log('headers accessToken', accessToken);
   return {
     Authorization: `Bearer ${accessToken}`,
   };
@@ -57,9 +56,12 @@ export const getData = async (accessToken: string) => {
         allTracks.push({
           name: song.name,
           id: song.id,
+          duration: song.duration_ms,
           explicit: song.explicit,
         });
       }
+
+      if(!new RegExp('(karaoke|machine|tour|sessions|live)', 'gi').test(albums[i].name.toLowerCase()))
       allAlbums.push({
         name: albums[i].name,
         id: albums[i].id,
@@ -96,8 +98,8 @@ export const createPlaylist = async (accessToken: string) => {
     name: 'The Eras Tour',
   };
 
+  // throw new Error('playlist not created');
   const { data } = await axios.post(`${config.API_URL}/users/${user.id}/playlists`, body, { headers });
-
   return data;
 };
 
