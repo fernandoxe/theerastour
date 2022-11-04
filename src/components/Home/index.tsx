@@ -7,6 +7,7 @@ import { Button } from '../Button';
 import { Track } from '../../interfaces/Spotify';
 import { Setlist } from '../Setlist';
 import { getEmptyAllCheckedState, getSelectedTracks } from '../../services/tracks';
+import { ReactComponent as SpotifyLogo } from '../../icons/spotify.svg';
 
 const albums = artists[0].albums;
 
@@ -17,7 +18,11 @@ export const Home = () => {
   const [accessToken, setAccessToken] = useState('');
   const [showSetlist, setShowSetlist] = useState(false);
   const [playlistURL, setPlaylistURL] = useState('');
+  const [playlistId, setPlaylistId] = useState('');
+  const [addedTracks, setAddedTracks] = useState(false);
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
+  const [playlistError, setPlaylistError] = useState(false);
+  const [isLoadingSpotify, setIsLoadingSpotify] = useState(false);
 
   const handleLogin = () => {
     const stateId = getStateId();
@@ -56,13 +61,30 @@ export const Home = () => {
   };
 
   const handleCreatePlaylist = async () => {
+    setIsLoadingSpotify(true);
     try {
-      const playlist = await createPlaylist(accessToken);
-      const tracksIds = selectedTracks.map(track => track.id);
-      await addTracks(accessToken, playlist.id, tracksIds);
-      setPlaylistURL(playlist.external_urls.spotify);
+      let pid = playlistId;
+      let purl = playlistURL;
+      let atracks = addedTracks;
+      if(!pid) {
+        const playlist = await createPlaylist(accessToken);
+        pid = playlist.id;
+        purl = playlist.external_urls.spotify;
+        setPlaylistId(pid);
+      }
+      if(pid && !atracks) {
+        const tracksIds = selectedTracks.map(track => track.id);
+        await addTracks(accessToken, pid, tracksIds);
+        atracks = true;
+        setPlaylistURL(purl);
+        setAddedTracks(atracks);
+        setPlaylistError(false);
+      }
+      window.open(purl);
     } catch (error) {
-      
+      setPlaylistError(true);
+    } finally {
+      setIsLoadingSpotify(false);
     }
   };
 
@@ -124,18 +146,35 @@ export const Home = () => {
       }
       {!showLogin && showSetlist &&
         <>
-          {!playlistURL &&
+          <div className="mb-4">
             <Setlist
               selectedTracks={selectedTracks}
+              disableDrag={addedTracks}
               onReorder={setSelectedTracks}
-              onCreatePlaylist={handleCreatePlaylist}
             />
-          }
-          {playlistURL &&
-            <div>
-              <a href={playlistURL} target="_blank">View on Spotify</a>
+          </div>
+          {/* {playlistURL && */}
+            <div className="flex flex-col items-center gap-1">
+              <Button
+                loading={isLoadingSpotify}
+                onClick={handleCreatePlaylist}
+              >
+                <div className="flex gap-2">
+                  <div className="w-5 h-5">
+                    <SpotifyLogo />
+                  </div>
+                  <div className="text-sm">
+                    Spotify playlist
+                  </div>
+                </div>
+              </Button>
+              {playlistError &&
+                <div className="text-xs">
+                  Error creating the playlist, try again
+                </div>
+              }
             </div>
-          }
+          {/* } */}
         </>
       }
     </div>
