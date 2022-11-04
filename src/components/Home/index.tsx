@@ -22,6 +22,7 @@ export const Home = () => {
   const [addedTracks, setAddedTracks] = useState(false);
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
   const [playlistError, setPlaylistError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingSpotify, setIsLoadingSpotify] = useState(false);
 
   const handleLogin = () => {
@@ -81,8 +82,9 @@ export const Home = () => {
         setPlaylistError(false);
       }
       window.open(purl);
-    } catch (error) {
+    } catch (error: any) {
       setPlaylistError(true);
+      setErrorMessage(error.message);
     } finally {
       setIsLoadingSpotify(false);
     }
@@ -164,13 +166,18 @@ export const Home = () => {
                     <SpotifyLogo />
                   </div>
                   <div className="text-sm">
-                    Spotify playlist
+                    Create playlist
                   </div>
                 </div>
               </Button>
               {playlistError &&
                 <div className="text-xs">
                   Error creating the playlist, try again
+                </div>
+              }
+              {errorMessage &&
+                <div className="text-xs">
+                  {errorMessage}
                 </div>
               }
             </div>
