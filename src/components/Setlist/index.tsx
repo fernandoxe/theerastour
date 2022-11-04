@@ -14,6 +14,7 @@ import {
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { Track } from '../../interfaces/Spotify';
 import { Item } from './Item';
+import { getTotalDuration } from '../../services/tracks';
 
 export interface SetlistProps {
   selectedTracks: Track[];
@@ -41,7 +42,15 @@ export const Setlist = ({ selectedTracks, disableDrag, onReorder }: SetlistProps
 
   return (
     <>
-      <h3 className="font-bold text-lg text-center mb-4">The Eras Tour setlist</h3>
+      <h3 className="font-bold text-lg text-center mb-2">The Eras Tour setlist</h3>
+      <div className="flex justify-around text-xs mb-2">
+        <div>
+          {selectedTracks.length} track{selectedTracks.length === 1 ? '' : 's'}
+        </div>
+        <div>
+          {getTotalDuration(selectedTracks)}
+        </div>
+      </div>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -54,6 +63,9 @@ export const Setlist = ({ selectedTracks, disableDrag, onReorder }: SetlistProps
           )}
         </SortableContext>
       </DndContext>
+      <div className="text-xs italic">
+        You can reorder the list before sharing
+      </div>
     </>
   );
 };

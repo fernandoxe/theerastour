@@ -11,3 +11,8 @@ export const getSelectedTracks = (checkedState: boolean[][], albums: Album[]) =>
   );
   return tracks.flat();
 };
+
+export const getTotalDuration = (tracks: Track[]) => {
+  const total = tracks.reduce((prev, current) => prev + current.duration, 0);
+  return new Date(total).toISOString().slice(11, 19);
+};
