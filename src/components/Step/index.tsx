@@ -16,7 +16,17 @@ export const Step = ({ album, checkedState, onChange }: StepProps) => {
 
   return (
     <>
-      <h3 className="font-bold text-base mb-4">{album.name}</h3>
+      <h3 className="flex items-center gap-2 mb-4">
+        <div className="w-8 h-8">
+          <img
+            src={album.image}
+            alt={album.name}
+          />
+        </div>
+        <div className="font-bold text-lg">
+          {album.name}
+        </div>
+      </h3>
       <div className="flex flex-col gap-2">
         {album.tracks.map((track, i) =>
           <Track
