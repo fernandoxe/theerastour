@@ -62,6 +62,8 @@ export const Home = () => {
   };
 
   const handleCreatePlaylist = async () => {
+    setPlaylistError(false);
+    setErrorMessage('');
     setIsLoadingSpotify(true);
     try {
       let pid = playlistId;
@@ -72,14 +74,13 @@ export const Home = () => {
         pid = playlist.id;
         purl = playlist.external_urls.spotify;
         setPlaylistId(pid);
+        setPlaylistURL(purl);
       }
       if(pid && !atracks) {
-        const tracksIds = selectedTracks.map(track => track.id);
+        const tracksIds = selectedTracks.map(track => track.id);console.log('trying add tracks');
         await addTracks(accessToken, pid, tracksIds);
         atracks = true;
-        setPlaylistURL(purl);
         setAddedTracks(atracks);
-        setPlaylistError(false);
       }
       window.open(purl);
     } catch (error: any) {
@@ -155,33 +156,47 @@ export const Home = () => {
               onReorder={setSelectedTracks}
             />
           </div>
-          {/* {playlistURL && */}
-            <div className="flex flex-col items-center gap-1">
+          <div className="flex flex-col items-center gap-1">
+            {!addedTracks &&
               <Button
-                loading={isLoadingSpotify}
-                onClick={handleCreatePlaylist}
+              loading={isLoadingSpotify}
+              onClick={handleCreatePlaylist}
+            >
+              <div className="flex gap-2">
+                <div className="w-5 h-5">
+                  <SpotifyLogo />
+                </div>
+                <div className="text-sm">
+                  Create playlist
+                </div>
+              </div>
+            </Button>
+            }
+            {addedTracks &&
+              <Button
+                onClick={() => window.open(playlistURL)}
               >
                 <div className="flex gap-2">
                   <div className="w-5 h-5">
                     <SpotifyLogo />
                   </div>
                   <div className="text-sm">
-                    Create playlist
+                    View playlist
                   </div>
                 </div>
               </Button>
-              {playlistError &&
-                <div className="text-xs">
-                  Error creating the playlist, try again
-                </div>
-              }
-              {errorMessage &&
-                <div className="text-xs">
-                  {errorMessage}
-                </div>
-              }
-            </div>
-          {/* } */}
+            }
+            {playlistError &&
+              <div className="text-xs">
+                Error creating the playlist, try again
+              </div>
+            }
+            {errorMessage &&
+              <div className="text-xs">
+                {errorMessage}
+              </div>
+            }
+          </div>
         </>
       }
     </div>
