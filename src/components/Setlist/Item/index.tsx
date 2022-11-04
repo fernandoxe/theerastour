@@ -1,14 +1,15 @@
 import { Track } from '../../../interfaces/Spotify';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ReactComponent as Logo } from '../../../icons/drag.svg';
+import { ReactComponent as Drag } from '../../../icons/drag.svg';
 
 export interface ItemProps {
   track: Track;
   position: number;
+  disableDrag?: boolean;
 }
 
-export const Item = ({ track, position }: ItemProps) => {
+export const Item = ({ track, position, disableDrag }: ItemProps) => {
   const {
     attributes,
     listeners,
@@ -26,14 +27,16 @@ export const Item = ({ track, position }: ItemProps) => {
   return (
     <div ref={setNodeRef} style={style}>
       <div className="flex items-center p-2 text-sm border bg-white border-slate-400 rounded-lg mb-2 select-none">
-        <div
-          className="w-5 h-5 mr-2"
-          ref={setActivatorNodeRef}
-          {...attributes}
-          {...listeners}
-        >
-          <Logo />
-        </div>
+        {!disableDrag &&
+          <div
+            className="w-5 h-5 mr-2"
+            ref={setActivatorNodeRef}
+            {...attributes}
+            {...listeners}
+          >
+            <Drag />
+          </div>
+        }
         <div className="flex items-center gap-2">
           <div>
             {position}
