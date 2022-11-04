@@ -45,7 +45,7 @@ export const Setlist = ({ selectedTracks, disableDrag, onReorder }: SetlistProps
       <h3 className="font-bold text-lg text-center mb-2">The Eras Tour setlist</h3>
       <div className="flex justify-around text-xs mb-2">
         <div>
-          {selectedTracks.length} track{selectedTracks.length === 1 ? '' : 's'}
+          {selectedTracks.length} song{selectedTracks.length === 1 ? '' : 's'}
         </div>
         <div>
           {getTotalDuration(selectedTracks)}
