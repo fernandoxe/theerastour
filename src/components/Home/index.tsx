@@ -8,6 +8,7 @@ import { Track } from '../../interfaces/Spotify';
 import { Setlist } from '../Setlist';
 import { getEmptyAllCheckedState, getSelectedTracks } from '../../services/tracks';
 import { ReactComponent as SpotifyLogo } from '../../icons/spotify.svg';
+import { Share } from '../Share/Share';
 
 const albums = artists[0].albums;
 
@@ -24,6 +25,7 @@ export const Home = () => {
   const [playlistError, setPlaylistError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingSpotify, setIsLoadingSpotify] = useState(false);
+  const [isShared, setIsShared] = useState(false);
 
   const handleLogin = () => {
     const stateId = getStateId();
@@ -98,6 +100,10 @@ export const Home = () => {
     window.scrollTo(0, 0);
   };
 
+  const handleShared = () => {
+    setIsShared(true);
+  };
+
   return (
     <div className="max-w-2xl mx-auto">
       {showLogin &&
@@ -152,25 +158,25 @@ export const Home = () => {
           <div className="mb-4">
             <Setlist
               selectedTracks={selectedTracks}
-              disableDrag={addedTracks}
+              disableDrag={addedTracks || isShared}
               onReorder={setSelectedTracks}
             />
           </div>
-          <div className="flex flex-col items-center gap-1">
+          <div className="flex flex-col items-center gap-4">
             {!addedTracks &&
               <Button
-              loading={isLoadingSpotify}
-              onClick={handleCreatePlaylist}
-            >
-              <div className="flex gap-2">
-                <div className="w-5 h-5">
-                  <SpotifyLogo />
+                loading={isLoadingSpotify}
+                onClick={handleCreatePlaylist}
+              >
+                <div className="flex gap-2">
+                  <div className="w-5 h-5">
+                    <SpotifyLogo />
+                  </div>
+                  <div className="text-sm">
+                    Create playlist
+                  </div>
                 </div>
-                <div className="text-sm">
-                  Create playlist
-                </div>
-              </div>
-            </Button>
+              </Button>
             }
             {addedTracks &&
               <Button
@@ -196,6 +202,9 @@ export const Home = () => {
                 {errorMessage}
               </div>
             }
+            <div>
+              <Share selectedTracks={selectedTracks} onShared={handleShared} />
+            </div>
           </div>
         </>
       }
