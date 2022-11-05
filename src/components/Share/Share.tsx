@@ -117,20 +117,18 @@ export const Share = ({ selectedTracks, onShared }: ShareProps) => {
   const handleShare = async () => {
     setShareLoading(true);
 
-    if(navigator.canShare()) {
-      navigator.share({
-        text: `${imageFile ? 'My setlist' : 'Make a setlist'} for The Eras Tour`,
-        files: imageFile && [imageFile],
-        title: 'The Eras Tour',
-        url: 'https://theerastour.vercel.app/',
-      })
-      .then(() => {
-        
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    }
+    navigator.share({
+      text: `${imageFile ? 'My setlist' : 'Make a setlist'} for The Eras Tour`,
+      files: imageFile && [imageFile],
+      title: 'The Eras Tour',
+      url: 'https://theerastour.vercel.app/',
+    })
+    .then(() => {
+      
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
     setShareLoading(false);
     onShared();
@@ -138,7 +136,7 @@ export const Share = ({ selectedTracks, onShared }: ShareProps) => {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      {imageUrl && navigator.canShare() &&
+      {imageUrl && navigator.canShare({title: 'The Eras Tour'}) &&
         <Button
           loading={shareLoading}
           onClick={handleShare}
