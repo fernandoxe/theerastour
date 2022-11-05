@@ -26,7 +26,7 @@ export const Item = ({ track, position, disableDrag }: ItemProps) => {
 
   return (
     <div ref={setNodeRef} style={style}>
-      <div className="flex items-center p-2 text-sm border bg-white border-slate-400 rounded-lg mb-2 select-none gap-2">
+      <div className="flex items-center p-2 text-sm text-white font-semibold bg-[#525b84] border border-[#525b84] rounded-lg mb-2 select-none gap-2">
         {!disableDrag &&
           <div
             className="w-5 h-5 shrink-0"
@@ -37,14 +37,12 @@ export const Item = ({ track, position, disableDrag }: ItemProps) => {
             <Drag />
           </div>
         }
-        {/* <div className="flex items-center gap-2"> */}
-          <div className="text-xs">
-            {position}
-          </div>
-          <div className="font-semibold">
-            {track.name}
-          </div>
-        {/* </div> */}
+        <div className="text-xs">
+          {position}
+        </div>
+        <div className="font-semibold">
+          {track.name}
+        </div>
       </div>
     </div>
   );

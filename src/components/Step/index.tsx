@@ -23,7 +23,7 @@ export const Step = ({ album, checkedState, onChange }: StepProps) => {
             alt={album.name}
           />
         </div>
-        <div className="font-bold text-lg">
+        <div className="font-bold text-lg text-white">
           {album.name}
         </div>
       </h3>

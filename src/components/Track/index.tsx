@@ -13,7 +13,7 @@ export const Track = ({ checked, name, onChange }: TrackProps) => {
         checked={checked}
         onChange={onChange}
       />
-      <div className="px-4 py-2 text-sm font-semibold peer-checked:bg-slate-400 border border-slate-400 rounded-lg select-none">
+      <div className="px-4 py-2 text-white text-sm font-semibold shadow-sm shadow-[rgba(34,41,69,0.6)] peer-checked:bg-[#525b84] peer-checked:shadow-none border border-[#525b84] rounded-lg select-none">
         {name}
       </div>
     </label>

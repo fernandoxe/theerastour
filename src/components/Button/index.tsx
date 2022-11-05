@@ -8,11 +8,11 @@ export interface ButtonProps {
 }
 
 export const Button: FC<ButtonProps> = ({ variant, children, loading, onClick }) => {
-  const buttonVariant = variant === 'secondary' ? '' : 'bg-slate-300';
+  const buttonVariant = variant === 'secondary' ? 'text-white' : 'bg-[#ac9eb8] text-black';
 
   return (
     <button
-      className={`${buttonVariant} border-2 border-slate-300 px-8 py-2 rounded relative`}
+      className={`${buttonVariant} border-2 border-[#ac9eb8] px-8 py-2 rounded relative shadow-md shadow-[rgba(34,41,69,0.6)] active:shadow-none`}
       onClick={onClick}
       disabled={loading}
     >
