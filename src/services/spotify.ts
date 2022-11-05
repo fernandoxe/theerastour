@@ -6,7 +6,7 @@ export const getStateId = () => {
   let stateId = localStorage.getItem('stateId');
   if(!stateId) {
     stateId = v4();
-    // localStorage.setItem('state', stateId);
+    // localStorage.setItem('stateId', stateId);
   }
   return stateId;
 }
@@ -120,5 +120,17 @@ export const addTracks = async (accessToken: string, playlistId: string, tracks:
   // throw new Error('Tracks not added');
 
   const { data } = await axios.post(`${config.API_URL}/playlists/${playlistId}/tracks`, body, { headers });
+  return data;
+};
+
+export const addCover = async (accessToken: string, playlistId: string, image: string) => {
+  const headers = getHeaders(accessToken);
+
+  const body = image;
+
+  // await new Promise(resolve => setTimeout(resolve, 1000));
+  // throw new Error('Cover not added');
+
+  const { data } = await axios.post(`${config.API_URL}/playlists/${playlistId}/images`, body, { headers });
   return data;
 };
