@@ -15,6 +15,7 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { Track } from '../../interfaces/Spotify';
 import { Item } from './Item';
 import { getTotalDuration } from '../../services/tracks';
+import cover from '../../icons/cover.jpg';
 
 export interface SetlistProps {
   selectedTracks: Track[];
@@ -42,13 +43,18 @@ export const Setlist = ({ selectedTracks, disableDrag, onReorder }: SetlistProps
 
   return (
     <>
-      <h3 className="font-bold text-lg text-center mb-2">The Eras Tour setlist</h3>
-      <div className="flex justify-around text-xs mb-2">
-        <div>
-          {selectedTracks.length} song{selectedTracks.length === 1 ? '' : 's'}
+      <div className="flex gap-4 mb-4 items-center">
+        <div className="w-[120px]">
+        <img src={cover} alt="The Eras Tour cover" />
         </div>
-        <div>
-          {getTotalDuration(selectedTracks)}
+        <div className="flex flex-col text-white gap-4">
+          <h3 className="font-bold text-2xl">The Eras Tour</h3>
+          <div className="text-xs">
+            {selectedTracks.length} song{selectedTracks.length === 1 ? '' : 's'}
+          </div>
+          <div className="text-xs">
+            {getTotalDuration(selectedTracks)}
+          </div>
         </div>
       </div>
       <DndContext
@@ -63,7 +69,7 @@ export const Setlist = ({ selectedTracks, disableDrag, onReorder }: SetlistProps
           )}
         </SortableContext>
       </DndContext>
-      <div className="text-xs italic">
+      <div className="text-xs text-white italic">
         You can reorder the list before sharing
       </div>
     </>
