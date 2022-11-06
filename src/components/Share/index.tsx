@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import cover from '../../icons/cover.jpg';
 import { Track } from '../../interfaces/Spotify';
 import { getTotalDuration } from '../../services/tracks';
+import { clickSaveScreenshot, clickShare } from '../../services/gtm';
 
 const titleSize = 62;
 const subtitleSize = 28;
@@ -14,9 +15,10 @@ const marginBottom = 16;
 
 export interface ShareProps {
   selectedTracks: Track[];
+  spotifyPlaylist: string;
 };
 
-export const Share = ({ selectedTracks }: ShareProps) => {
+export const Share = ({ selectedTracks, spotifyPlaylist }: ShareProps) => {
   const imageRef = useRef<HTMLImageElement>(document.createElement('img'));
   const [imageUrl, setImageUrl] = useState('');
   const [imageFile, setImageFile] = useState<File>();
@@ -124,25 +126,30 @@ export const Share = ({ selectedTracks }: ShareProps) => {
     a.href = imageUrl;
     a.click();
     setScreenshotLoading(false);
+    clickSaveScreenshot();
   };
 
   const handleShare = async () => {
     setShareLoading(true);
 
+    let text = `The Eras Tour setlist\n\n`;
+    text += `${spotifyPlaylist ? spotifyPlaylist + '\n\n' : ''}`;
+    text += `https://theerastour.vercel.app/`;
+
     navigator.share({
-      text: `${imageFile ? 'My setlist' : 'Make a setlist'} for The Eras Tour`,
+      text: text,
       files: imageFile && [imageFile],
       title: 'The Eras Tour',
-      url: 'https://theerastour.vercel.app/',
     })
     .then(() => {
       
     })
     .catch((error) => {
-      console.log(error);
+      
     });
 
     setShareLoading(false);
+    clickShare();
   };
 
   return (
