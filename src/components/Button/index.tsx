@@ -12,7 +12,7 @@ export const Button: FC<ButtonProps> = ({ variant, children, loading, onClick })
 
   return (
     <button
-      className={`${buttonVariant} border-2 border-[#ac9eb8] px-8 py-2 rounded relative shadow-md shadow-[rgba(34,41,69,0.6)] active:shadow-none`}
+      className={`${buttonVariant} border-2 border-[#ac9eb8] px-8 py-2 rounded relative shadow-md shadow-[rgba(0,0,0,0.5)] active:shadow-none`}
       onClick={onClick}
       disabled={loading}
     >

@@ -16,7 +16,7 @@ export const Track = ({ checked, name, position, disabled, onChange }: TrackProp
         disabled={disabled}
         onChange={onChange}
       />
-      <div className="flex items-center gap-2 px-4 py-2 text-white text-sm shadow-sm shadow-[rgba(34,41,69,0.6)] peer-checked:bg-[#525b84] peer-checked:shadow-none border border-[#525b84] rounded-lg select-none">
+      <div className="flex items-center gap-2 px-4 py-2 text-white text-sm shadow-sm shadow-[rgba(0,0,0,0.5)] peer-checked:bg-[#525b84] peer-checked:shadow-none border border-[#525b84] rounded-lg select-none">
         {position &&
           <div className="text-xs">
             {position}
