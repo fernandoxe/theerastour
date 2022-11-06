@@ -6,11 +6,12 @@ import { Step } from '../Step';
 import { Button } from '../Button';
 import { Track } from '../../interfaces/Spotify';
 import { Reorder } from '../Reorder';
-import { getEmptyAllCheckedState, getSelectedTracks } from '../../services/tracks';
+import { getEmptyAllCheckedState, getSelectedTracks, getTotalDuration } from '../../services/tracks';
 import { ReactComponent as SpotifyLogo } from '../../icons/spotify.svg';
 import { Share } from '../Share';
 import { Setlist } from '../Setlist';
 import cover from '../../icons/cover.jpg';
+import { clickCreatePlaylist, clickLogin, clickNext, clickPrev, clickViewPlaylist, showSetlist, successfulLogin } from '../../services/gtm';
 
 const albums = artists[0].albums;
 
@@ -26,6 +27,7 @@ export const Home = () => {
   const [isLoadingSpotify, setIsLoadingSpotify] = useState(false);
 
   const handleLogin = () => {
+    clickLogin();
     const stateId = getStateId();
     
     let url = config.AUTH_URL;
@@ -44,6 +46,7 @@ export const Home = () => {
       setStep(1);
       setAccessToken(accessToken);
       window.history.replaceState('', '', window.location.href.split('#')[0]);
+      successfulLogin();
     }
   }, []);
 
@@ -54,6 +57,7 @@ export const Home = () => {
 
   const handlePrev = () => {
     setStep(step - 1);
+    clickPrev(step);
   };
 
   const handleNext = () => {
@@ -64,11 +68,13 @@ export const Home = () => {
       setSelectedTracks(newSelectedTracks);
     };
     window.scrollTo(0, 0);
+    clickNext(step);
   };
 
   const handleFinish = () => {
     setStep(step + 1);
     window.scrollTo(0, 0);
+    showSetlist(selectedTracks.length, getTotalDuration(selectedTracks));
   };
 
   const handleCreatePlaylist = async () => {
@@ -96,7 +102,13 @@ export const Home = () => {
       setPlaylistError(true);
     } finally {
       setIsLoadingSpotify(false);
+      clickCreatePlaylist();
     }
+  };
+
+  const handleViewPlaylist = () => {
+    window.open(playlistURL);
+    clickViewPlaylist();
   };
 
   return (
@@ -167,7 +179,7 @@ export const Home = () => {
       {step === 12 &&
         <>
           <div>
-            <Setlist selectedTracks={selectedTracks} />
+            <Setlist selectedTracks={selectedTracks} totalDuration={getTotalDuration(selectedTracks)} />
           </div>
           <div className="flex flex-col items-center gap-4">
             {!addedTracks &&
@@ -194,7 +206,7 @@ export const Home = () => {
             }
             {addedTracks &&
               <Button
-                onClick={() => window.open(playlistURL)}
+                onClick={handleViewPlaylist}
               >
                 <div className="flex gap-2">
                   <div className="w-5 h-5">
@@ -207,7 +219,7 @@ export const Home = () => {
               </Button>
             }
             <div>
-              <Share selectedTracks={selectedTracks} />
+              <Share selectedTracks={selectedTracks} spotifyPlaylist={playlistURL} />
             </div>
           </div>
         </>

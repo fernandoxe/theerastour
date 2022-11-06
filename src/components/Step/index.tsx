@@ -1,4 +1,5 @@
 import { Album } from '../../interfaces/Spotify';
+import { clickTrack } from '../../services/gtm';
 import { Track } from '../Track';
 
 export interface StepProps {
@@ -12,6 +13,7 @@ export const Step = ({ album, checkedState, onChange }: StepProps) => {
     const newCheckedState = checkedState.map((item, i) => i === trackNumber ? !item : item);
     if(newCheckedState.filter(item => item).length > 3) return;
     onChange(newCheckedState);
+    clickTrack(album.tracks[trackNumber].name);
   };
 
   return (
