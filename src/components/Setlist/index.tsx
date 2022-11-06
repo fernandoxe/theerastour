@@ -1,13 +1,13 @@
-import { getTotalDuration } from '../../services/tracks';
 import cover from '../../icons/cover.jpg';
 import { Track } from '../../interfaces/Spotify';
 import { Track as TrackComponent } from '../Track';
 
 export interface SetlistProps {
   selectedTracks: Track[];
+  totalDuration: string;
 }
 
-export const Setlist = ({ selectedTracks }: SetlistProps) => {
+export const Setlist = ({ selectedTracks, totalDuration }: SetlistProps) => {
   return (
     <div>
       <div className="flex gap-4 mb-4 items-center">
@@ -16,14 +16,11 @@ export const Setlist = ({ selectedTracks }: SetlistProps) => {
         </div>
         <div className="flex flex-col text-white gap-2">
           <h3 className="font-bold text-2xl">The Eras Tour setlist</h3>
-          {/* <div className="text-xs">
-            Setlist
-          </div> */}
           <div className="text-xs">
             {selectedTracks.length} song{selectedTracks.length === 1 ? '' : 's'}
           </div>
           <div className="text-xs">
-            {getTotalDuration(selectedTracks)}
+            {totalDuration}
           </div>
         </div>
       </div>
