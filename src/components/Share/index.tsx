@@ -6,18 +6,17 @@ import cover from '../../icons/cover.jpg';
 import { Track } from '../../interfaces/Spotify';
 import { getTotalDuration } from '../../services/tracks';
 
-const titleSize = 70;
+const titleSize = 62;
 const subtitleSize = 28;
 const trackNameSize = 30;
-const lineSize = 32;
+const lineSize = 31;
 const marginBottom = 16;
 
 export interface ShareProps {
   selectedTracks: Track[];
-  onShared: () => void;
 };
 
-export const Share = ({ selectedTracks, onShared }: ShareProps) => {
+export const Share = ({ selectedTracks }: ShareProps) => {
   const imageRef = useRef<HTMLImageElement>(document.createElement('img'));
   const [imageUrl, setImageUrl] = useState('');
   const [imageFile, setImageFile] = useState<File>();
@@ -33,16 +32,16 @@ export const Share = ({ selectedTracks, onShared }: ShareProps) => {
     canvas.height = 1920;
 
     if(ctx) {
-      ctx.fillStyle = '#525b84';
+      ctx.fillStyle = '#222945';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(imageRef.current, 70, 70, img.width, img.height);
+      ctx.drawImage(img, 70, 35, 300, 300);
 
-      let positionX = 70 + img.width + 35;
-      let positionY = 70 + 35 + titleSize;
+      let positionX = 70 + 300 + 35;
+      let positionY = 35 + 35 + titleSize;
       ctx.font = `bold ${titleSize}px Arial`;
       ctx.textAlign = 'left';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText('The Eras Tour',
+      ctx.fillText('The Eras Tour setlist',
         positionX,
         positionY
       );
@@ -63,7 +62,7 @@ export const Share = ({ selectedTracks, onShared }: ShareProps) => {
 
       positionX = 70;
 
-      positionY = 70 + img.height + 70;
+      positionY = 35 + 300 + 70;
 
       for (let i = 0; i < selectedTracks.length; i++) {
         const track = selectedTracks[i];
@@ -75,7 +74,7 @@ export const Share = ({ selectedTracks, onShared }: ShareProps) => {
           positionY
         );
 
-        const linePositionX = positionX + ctx.measureText(`${i + 1}  `).width;
+        const linePositionX = positionX + ctx.measureText(`${i + 1}   `).width;
         
         ctx.font = `bold ${trackNameSize}px Arial`;
         ctx.fillText(name,
@@ -86,6 +85,20 @@ export const Share = ({ selectedTracks, onShared }: ShareProps) => {
         positionY += lineSize;
         positionY += marginBottom;
       }
+
+      ctx.textAlign = 'center';
+
+      ctx.font = `bold ${36}px Arial`;
+      ctx.fillText('https://theerastour.vercel.app/',
+        1080 / 2,
+        1920 - subtitleSize - marginBottom - 36
+      );
+
+      ctx.font = `${subtitleSize}px Arial`;
+      ctx.fillText('Make your own setlist',
+        1080 / 2,
+        1920 - subtitleSize - marginBottom
+      );
       
       const dataUrl = canvas.toDataURL('image/jpeg');
       
@@ -111,7 +124,6 @@ export const Share = ({ selectedTracks, onShared }: ShareProps) => {
     a.href = imageUrl;
     a.click();
     setScreenshotLoading(false);
-    onShared();
   };
 
   const handleShare = async () => {
@@ -131,7 +143,6 @@ export const Share = ({ selectedTracks, onShared }: ShareProps) => {
     });
 
     setShareLoading(false);
-    onShared();
   };
 
   return (
