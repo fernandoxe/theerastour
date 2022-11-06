@@ -5,27 +5,25 @@ import { artists } from '../../data';
 import { Step } from '../Step';
 import { Button } from '../Button';
 import { Track } from '../../interfaces/Spotify';
-import { Setlist } from '../Setlist';
+import { Reorder } from '../Reorder';
 import { getEmptyAllCheckedState, getSelectedTracks } from '../../services/tracks';
 import { ReactComponent as SpotifyLogo } from '../../icons/spotify.svg';
-import { Share } from '../Share/Share';
+import { Share } from '../Share';
+import { Setlist } from '../Setlist';
+import cover from '../../icons/cover.jpg';
 
 const albums = artists[0].albums;
 
 export const Home = () => {
-  const [showLogin, setShowLogin] = useState(true);
   const [step, setStep] = useState(0);
   const [allCheckedState, setAllCheckedState] = useState(getEmptyAllCheckedState(albums));
   const [accessToken, setAccessToken] = useState('');
-  const [showSetlist, setShowSetlist] = useState(false);
   const [playlistURL, setPlaylistURL] = useState('');
   const [playlistId, setPlaylistId] = useState('');
   const [addedTracks, setAddedTracks] = useState(false);
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
   const [playlistError, setPlaylistError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingSpotify, setIsLoadingSpotify] = useState(false);
-  const [isShared, setIsShared] = useState(false);
 
   const handleLogin = () => {
     const stateId = getStateId();
@@ -43,7 +41,7 @@ export const Home = () => {
   useEffect(() => {
     const accessToken = getAccessToken();
     if(accessToken) {
-      setShowLogin(false);
+      setStep(1);
       setAccessToken(accessToken);
       window.history.replaceState('', '', window.location.href.split('#')[0]);
     }
@@ -59,13 +57,22 @@ export const Home = () => {
   };
 
   const handleNext = () => {
+    const newStep = step + 1;
+    setStep(step + 1);
+    if(newStep === 11) {
+      const newSelectedTracks = getSelectedTracks(allCheckedState, albums);
+      setSelectedTracks(newSelectedTracks);
+    };
+    window.scrollTo(0, 0);
+  };
+
+  const handleFinish = () => {
     setStep(step + 1);
     window.scrollTo(0, 0);
   };
 
   const handleCreatePlaylist = async () => {
     setPlaylistError(false);
-    setErrorMessage('');
     setIsLoadingSpotify(true);
     try {
       let pid = playlistId;
@@ -87,26 +94,14 @@ export const Home = () => {
       window.open(purl);
     } catch (error: any) {
       setPlaylistError(true);
-      setErrorMessage(error.message);
     } finally {
       setIsLoadingSpotify(false);
     }
   };
 
-  const handleFinish = () => {
-    const newSelectedTracks = getSelectedTracks(allCheckedState, albums);
-    setSelectedTracks(newSelectedTracks);
-    setShowSetlist(true);
-    window.scrollTo(0, 0);
-  };
-
-  const handleShared = () => {
-    setIsShared(true);
-  };
-
   return (
     <div className="max-w-2xl mx-auto">
-      {showLogin &&
+      {step === 0 &&
         <div className="fixed top-0 right-0 bottom-0 left-0 flex items-center justify-center gap-4">
           <Button
             onClick={handleLogin}
@@ -115,13 +110,13 @@ export const Home = () => {
           </Button>
         </div>
       }
-      {!showLogin && !showSetlist &&
+      {step > 0 && step <= 10 &&
         <>
           <div className="mb-4">
             <Step
-              album={albums[step]}
-              checkedState={allCheckedState[step]}
-              onChange={(checkedState) => handleStepChange(checkedState, step)}
+              album={albums[step - 1]}
+              checkedState={allCheckedState[step - 1]}
+              onChange={(checkedState) => handleStepChange(checkedState, step - 1)}
             />
           </div>
           <div className="flex justify-between gap-4">
@@ -133,7 +128,7 @@ export const Home = () => {
                 Previous
               </Button>
             }
-            {step !== albums.length - 1 &&
+            {step >= 1 &&
               <div className="only:ml-auto">
                 <Button
                   onClick={handleNext}
@@ -143,40 +138,59 @@ export const Home = () => {
 
               </div>
             }
-            {step === albums.length - 1 &&
-              <Button
-                onClick={handleFinish}
-              >
-                Finish
-              </Button>
-            }
           </div>
         </>
       }
-      {!showLogin && showSetlist &&
+      {step === 11 &&
         <>
           <div className="mb-4">
-            <Setlist
+            <Reorder
               selectedTracks={selectedTracks}
-              disableDrag={addedTracks || isShared}
               onReorder={setSelectedTracks}
             />
           </div>
+          <div className="flex justify-between gap-4">
+            <Button
+              variant="secondary"
+              onClick={handlePrev}
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={handleFinish}
+            >
+              Finish
+            </Button>
+          </div>
+        </>
+      }
+      {step === 12 &&
+        <>
+          <div>
+            <Setlist selectedTracks={selectedTracks} />
+          </div>
           <div className="flex flex-col items-center gap-4">
             {!addedTracks &&
-              <Button
-                loading={isLoadingSpotify}
-                onClick={handleCreatePlaylist}
-              >
-                <div className="flex gap-2">
-                  <div className="w-5 h-5">
-                    <SpotifyLogo />
+              <div>
+                <Button
+                  loading={isLoadingSpotify}
+                  onClick={handleCreatePlaylist}
+                >
+                  <div className="flex gap-2">
+                    <div className="w-5 h-5">
+                      <SpotifyLogo />
+                    </div>
+                    <div className="text-sm">
+                      Create playlist
+                    </div>
                   </div>
-                  <div className="text-sm">
-                    Create playlist
+                </Button>
+                {playlistError &&
+                  <div className="text-xs text-white">
+                    Error creating the playlist, try again
                   </div>
-                </div>
-              </Button>
+                }
+              </div>
             }
             {addedTracks &&
               <Button
@@ -192,22 +206,17 @@ export const Home = () => {
                 </div>
               </Button>
             }
-            {playlistError &&
-              <div className="text-xs">
-                Error creating the playlist, try again
-              </div>
-            }
-            {errorMessage &&
-              <div className="text-xs">
-                {errorMessage}
-              </div>
-            }
             <div>
-              <Share selectedTracks={selectedTracks} onShared={handleShared} />
+              <Share selectedTracks={selectedTracks} />
             </div>
           </div>
         </>
       }
+      <img
+        className="hidden"
+        src={cover}
+        alt="The Eras Tour Cover"
+      />
     </div>
   );
 };
