@@ -91,18 +91,18 @@ export const Share = ({ selectedTracks, spotifyPlaylist }: ShareProps) => {
 
       ctx.textAlign = 'center';
 
+      ctx.font = `${subtitleSize}px Arial`;
+      ctx.fillText('Make your own setlist',
+      1080 / 2,
+      1920 - subtitleSize - marginBottom - 38
+      );
+      
       ctx.font = `bold ${36}px Arial`;
       ctx.fillText('https://theerastour.vercel.app/',
         1080 / 2,
-        1920 - subtitleSize - marginBottom - 36
-      );
-
-      ctx.font = `${subtitleSize}px Arial`;
-      ctx.fillText('Make your own setlist',
-        1080 / 2,
         1920 - subtitleSize - marginBottom
       );
-      
+
       const dataUrl = canvas.toDataURL('image/jpeg');
       
       setImageUrl(dataUrl);
