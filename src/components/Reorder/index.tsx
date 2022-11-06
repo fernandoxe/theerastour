@@ -42,7 +42,7 @@ export const Reorder = ({ selectedTracks, disableDrag, onReorder }: ReorderProps
   return (
     <>
       <h2 className="text-base text-white mb-4">
-        You can reorder your setlist before finish
+        You can reorder your setlist before finishing
       </h2>
       <DndContext
         sensors={sensors}
