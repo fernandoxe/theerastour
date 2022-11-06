@@ -133,9 +133,8 @@ export const Share = ({ selectedTracks, spotifyPlaylist }: ShareProps) => {
 
   const handleShare = async () => {
     setShareLoading(true);
-
-    let text = `The Eras Tour setlist\n\n`;
-    text += `${spotifyPlaylist ? spotifyPlaylist + '\n\n' : ''}`;
+    
+    let text = `${spotifyPlaylist ? spotifyPlaylist + '\n\n' : ''}`;
     text += `https://theerastour.vercel.app/`;
 
     navigator.share({
