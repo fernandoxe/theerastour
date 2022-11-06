@@ -96,7 +96,7 @@ export const createPlaylist = async (accessToken: string) => {
   const user = await getUser(accessToken);
   const headers = getHeaders(accessToken);
   const body = {
-    name: 'The Eras Tour',
+    name: 'The Eras Tour setlist',
   };
 
   // await new Promise(resolve => setTimeout(resolve, 1000));
@@ -127,11 +127,11 @@ export const addTracks = async (accessToken: string, playlistId: string, tracks:
 export const addCover = async (accessToken: string, playlistId: string, image: string) => {
   const headers = getHeaders(accessToken);
 
-  const body = image;
+  const body = image.split(',')[1];
 
   // await new Promise(resolve => setTimeout(resolve, 1000));
   // throw new Error('Cover not added');
 
-  const { data } = await axios.post(`${config.API_URL}/playlists/${playlistId}/images`, body, { headers });
+  const { data } = await axios.put(`${config.API_URL}/playlists/${playlistId}/images`, body, { headers });
   return data;
 };

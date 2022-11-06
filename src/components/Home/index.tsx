@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { config } from '../../config';
-import { addTracks, createPlaylist, getAccessToken, getStateId } from '../../services/spotify';
+import { addCover, addTracks, createPlaylist, getAccessToken, getStateId } from '../../services/spotify';
 import { artists } from '../../data';
 import { Step } from '../Step';
 import { Button } from '../Button';
@@ -10,7 +10,7 @@ import { getEmptyAllCheckedState, getSelectedTracks, getTotalDuration } from '..
 import { ReactComponent as SpotifyLogo } from '../../icons/spotify.svg';
 import { Share } from '../Share';
 import { Setlist } from '../Setlist';
-import cover from '../../icons/cover.jpg';
+import { cover } from '../../icons/cover';
 import { clickCreatePlaylist, clickLogin, clickNext, clickPrev, clickViewPlaylist, showSetlist, successfulLogin } from '../../services/gtm';
 import * as Sentry from "@sentry/browser";
 
@@ -22,6 +22,7 @@ export const Home = () => {
   const [accessToken, setAccessToken] = useState('');
   const [playlistURL, setPlaylistURL] = useState('');
   const [playlistId, setPlaylistId] = useState('');
+  const [uploadedCover, setUploadedCover] = useState(false);
   const [addedTracks, setAddedTracks] = useState(false);
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
   const [playlistError, setPlaylistError] = useState(false);
@@ -34,7 +35,7 @@ export const Home = () => {
     let url = config.AUTH_URL;
     url += `?response_type=token`;
     url += `&client_id=${encodeURIComponent(config.CLIENT_ID)}`;
-    url += `&scope=${encodeURIComponent('user-read-private user-read-email playlist-modify-public')}`;
+    url += `&scope=${encodeURIComponent('user-read-private user-read-email playlist-modify-public ugc-image-upload')}`;
     url += `&redirect_uri=${encodeURIComponent(config.REDIRECT_URL || '/')}`;
     url += `&state=${encodeURIComponent(stateId)}`;
     
@@ -91,6 +92,11 @@ export const Home = () => {
         purl = playlist.external_urls.spotify;
         setPlaylistId(pid);
         setPlaylistURL(purl);
+      }
+      if(pid && !uploadedCover) {
+        addCover(accessToken, pid, cover)
+          .then(response => setUploadedCover(true))
+          .catch(error => Sentry.captureException(error));
       }
       if(pid && !atracks) {
         const tracksIds = selectedTracks.map(track => track.id);console.log('trying add tracks');
