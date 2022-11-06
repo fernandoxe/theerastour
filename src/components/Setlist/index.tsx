@@ -1,4 +1,4 @@
-import cover from '../../icons/cover.jpg';
+import { cover } from '../../icons/cover';
 import { Track } from '../../interfaces/Spotify';
 import { Track as TrackComponent } from '../Track';
 
