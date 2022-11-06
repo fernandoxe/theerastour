@@ -6,6 +6,7 @@ import cover from '../../icons/cover.jpg';
 import { Track } from '../../interfaces/Spotify';
 import { getTotalDuration } from '../../services/tracks';
 import { clickSaveScreenshot, clickShare } from '../../services/gtm';
+import * as Sentry from "@sentry/browser";
 
 const titleSize = 62;
 const subtitleSize = 28;
@@ -145,7 +146,7 @@ export const Share = ({ selectedTracks, spotifyPlaylist }: ShareProps) => {
       
     })
     .catch((error) => {
-      
+      Sentry.captureException(error);
     });
 
     setShareLoading(false);

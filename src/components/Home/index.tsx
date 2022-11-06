@@ -12,6 +12,7 @@ import { Share } from '../Share';
 import { Setlist } from '../Setlist';
 import cover from '../../icons/cover.jpg';
 import { clickCreatePlaylist, clickLogin, clickNext, clickPrev, clickViewPlaylist, showSetlist, successfulLogin } from '../../services/gtm';
+import * as Sentry from "@sentry/browser";
 
 const albums = artists[0].albums;
 
@@ -100,6 +101,7 @@ export const Home = () => {
       window.open(purl);
     } catch (error: any) {
       setPlaylistError(true);
+      Sentry.captureException(error);
     } finally {
       setIsLoadingSpotify(false);
       clickCreatePlaylist();

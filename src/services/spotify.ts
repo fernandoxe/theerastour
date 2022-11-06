@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { v4 } from 'uuid';
 import { config } from '../config';
+import * as Sentry from "@sentry/browser";
 
 export const getStateId = () => {
   let stateId = localStorage.getItem('stateId');
@@ -80,7 +81,7 @@ export const getData = async (accessToken: string) => {
     console.log(allArtists);
     return allArtists;
   } catch (error) {
-    
+    Sentry.captureException(error);
   }
 };
 
