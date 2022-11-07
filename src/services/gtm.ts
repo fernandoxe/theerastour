@@ -18,6 +18,14 @@ export const clickLogin = () => {
   );
 };
 
+export const clickGuest = () => {
+  event(
+    `Click guest`,
+    `Click guest`,
+    true,
+  );
+};
+
 export const successfulLogin = () => {
   event(
     `Successful login`,
