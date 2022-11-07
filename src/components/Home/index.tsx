@@ -11,7 +11,7 @@ import { ReactComponent as SpotifyLogo } from '../../icons/spotify.svg';
 import { Share } from '../Share';
 import { Setlist } from '../Setlist';
 import { cover } from '../../icons/cover';
-import { clickCreatePlaylist, clickLogin, clickNext, clickPrev, clickViewPlaylist, showSetlist, successfulLogin } from '../../services/gtm';
+import { clickCreatePlaylist, clickGuest, clickLogin, clickNext, clickPrev, clickViewPlaylist, showSetlist, successfulLogin } from '../../services/gtm';
 import * as Sentry from "@sentry/browser";
 
 const albums = artists[0].albums;
@@ -27,6 +27,7 @@ export const Home = () => {
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
   const [playlistError, setPlaylistError] = useState(false);
   const [isLoadingSpotify, setIsLoadingSpotify] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
 
   const handleLogin = () => {
     clickLogin();
@@ -40,6 +41,12 @@ export const Home = () => {
     url += `&state=${encodeURIComponent(stateId)}`;
     
     window.location.href = url;
+  };
+
+  const handleGuest = () => {
+    setStep(1);
+    setIsGuest(true);
+    clickGuest();
   };
 
   useEffect(() => {
@@ -138,18 +145,27 @@ export const Home = () => {
           <div className="text-white mb-4">
             selecting up to 3 songs per album
           </div>
-          <Button
-            onClick={handleLogin}
-          >
-            <div className="flex gap-2">
-              <div className="w-5 h-5">
-                <SpotifyLogo />
+          <div className="flex flex-col gap-4">
+            <Button
+              onClick={handleLogin}
+            >
+              <div className="flex gap-2">
+                <div className="w-5 h-5">
+                  <SpotifyLogo />
+                </div>
+                <div className="text-sm">
+                  Start with Spotify
+                </div>
               </div>
+            </Button>
+            <Button
+              onClick={handleGuest}
+            >
               <div className="text-sm">
-                Start
-              </div>
-            </div>
-          </Button>
+                  Start as a guest
+                </div>
+            </Button>
+          </div>
         </div>
       }
       {step > 0 && step <= 10 &&
@@ -212,7 +228,7 @@ export const Home = () => {
             <Setlist selectedTracks={selectedTracks} totalDuration={getTotalDuration(selectedTracks)} />
           </div>
           <div className="flex flex-col items-center gap-4">
-            {!addedTracks &&
+            {!isGuest && !addedTracks &&
               <div>
                 <Button
                   loading={isLoadingSpotify}
@@ -234,7 +250,7 @@ export const Home = () => {
                 }
               </div>
             }
-            {addedTracks &&
+            {!isGuest && addedTracks &&
               <Button
                 onClick={handleViewPlaylist}
               >
