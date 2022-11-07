@@ -162,7 +162,7 @@ export const Home = () => {
             />
           </div>
           <div className="flex justify-between gap-4">
-            {step > 0 &&
+            {step > 1 &&
               <Button
                 variant="secondary"
                 onClick={handlePrev}
