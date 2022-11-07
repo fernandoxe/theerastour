@@ -146,24 +146,29 @@ export const Home = () => {
             selecting up to 3 songs per album
           </div>
           <div className="flex flex-col gap-4">
-            <Button
-              onClick={handleLogin}
-            >
-              <div className="flex gap-2">
-                <div className="w-5 h-5">
-                  <SpotifyLogo />
+            <div>
+              <Button
+                onClick={handleLogin}
+              >
+                <div className="flex gap-2">
+                  <div className="w-5 h-5">
+                    <SpotifyLogo />
+                  </div>
+                  <div className="text-sm">
+                    Start with Spotify
+                  </div>
                 </div>
-                <div className="text-sm">
-                  Start with Spotify
-                </div>
+              </Button>
+              <div className="text-xs text-white text-center">
+                You can create a playlist
               </div>
-            </Button>
+            </div>
             <Button
               onClick={handleGuest}
             >
               <div className="text-sm">
-                  Start as a guest
-                </div>
+                Start as a guest
+              </div>
             </Button>
           </div>
         </div>
@@ -244,7 +249,7 @@ export const Home = () => {
                   </div>
                 </Button>
                 {playlistError &&
-                  <div className="text-xs text-white">
+                  <div className="text-xs text-white text-center">
                     Error creating the playlist, try again
                   </div>
                 }
